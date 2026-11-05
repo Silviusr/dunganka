@@ -55,8 +55,8 @@ class Order(models.Model):
 
     class Meta:
         ordering = ["-created_at"]
-        verbose_name = "демозаявка"
-        verbose_name_plural = "демозаявки"
+        verbose_name = "заявка"
+        verbose_name_plural = "заявки"
 
     @property
     def number(self):
@@ -69,7 +69,7 @@ class Order(models.Model):
         )
 
     def __str__(self):
-        return f"Демо {self.number} · {self.name}"
+        return f"Заявка {self.number} · {self.name}"
 
 
 class OrderLine(models.Model):

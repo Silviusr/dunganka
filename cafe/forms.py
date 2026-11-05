@@ -43,7 +43,7 @@ class CheckoutForm(forms.Form):
         widget=forms.TextInput(
             attrs={
                 "autocomplete": "street-address",
-                "placeholder": "Демонстрационный адрес",
+                "placeholder": "Улица, дом, город",
             }
         ),
     )
@@ -58,9 +58,6 @@ class CheckoutForm(forms.Form):
         max_length=1000,
         required=False,
         widget=forms.Textarea(attrs={"rows": 3, "placeholder": "Пожелания к заказу"}),
-    )
-    demo_consent = forms.BooleanField(
-        label="Я понимаю, что это демо. Ввожу только вымышленные данные; реальный заказ не будет принят."
     )
     token = forms.UUIDField(widget=forms.HiddenInput())
 

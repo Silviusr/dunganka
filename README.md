@@ -42,7 +42,7 @@ The local defaults enable DEBUG and use a development-only signing key. They are
 
 1. Add lagman and a flatbread, open the cart and change a quantity.
 2. Enter fictional details, a five-digit postcode and a future dispatch date. A syntactically valid test phone is `010-0000-0000`.
-3. Confirm the demo checkbox and save the request. Note its number and food subtotal.
+3. Save the preorder request. Note its number and food subtotal.
 4. Sign into `/admin/`, open the order, set its delivery fee and status.
 5. Refresh the receipt in the original browser. A separate browser/session receives 404.
 6. Change a dish price in admin: the earlier order retains its original unit price.
@@ -82,7 +82,7 @@ Browser → Django views + forms → transactional order service → SQLite
 | `cafe/tests.py` | Integration regressions through the actual routes/admin |
 | `config/settings.py` | Local defaults and environment-based HTTPS settings |
 
-Django templates and small progressive JavaScript keep ordering usable without a frontend build step. JavaScript disables the submit button while saving; server-side token uniqueness remains the duplicate safeguard. SQLite makes the demo easy to run. This is a single-restaurant service, not a multi-tenant SaaS.
+Django templates and small progressive JavaScript keep ordering usable without a frontend build step. JavaScript adds items without navigation and disables the submit button while saving; server-side token uniqueness remains the duplicate safeguard. SQLite makes the demo easy to run. This is a single-restaurant service, not a multi-tenant SaaS.
 
 ## Docker
 

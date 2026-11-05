@@ -4,6 +4,7 @@ from django.core.exceptions import ValidationError
 from django.http import Http404, HttpResponseBadRequest, JsonResponse
 from django.db import connection, DatabaseError
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 from django.views.decorators.http import require_POST
 from django.views.decorators.cache import never_cache
 from .forms import CheckoutForm
@@ -53,21 +54,37 @@ def cart(request):
 
 @require_POST
 def cart_add(request, dish_id):
+    wants_json = "application/json" in request.headers.get("Accept", "")
     dish = get_object_or_404(Dish, pk=dish_id, available=True)
+    basket = request.session.get("cart", {}).copy()
     try:
         quantity = int(request.POST.get("quantity", "1"))
         if not 1 <= quantity <= 20:
             raise ValueError
     except (ValueError, TypeError):
-        return HttpResponseBadRequest("Количество должно быть от 1 до 20.")
-    basket = request.session.get("cart", {}).copy()
-    if basket.get(str(dish_id), 0) + quantity > 20:
-        messages.error(request, "Не более 20 порций одного блюда.")
-    else:
+        message = "Количество должно быть от 1 до 20."
+        if wants_json:
+            return JsonResponse(
+                {"ok": False, "message": message, "cart_count": sum(basket.values())},
+                status=400,
+            )
+        return HttpResponseBadRequest(message)
+    ok = basket.get(str(dish_id), 0) + quantity <= 20
+    if ok:
         basket[str(dish_id)] = basket.get(str(dish_id), 0) + quantity
         request.session["cart"] = basket
-        messages.success(request, f"{dish.name} — добавлено в корзину")
-    return redirect("catalog")
+        message = f"{dish.name} — добавлено в корзину"
+    else:
+        message = "Не более 20 порций одного блюда."
+    if wants_json:
+        return JsonResponse(
+            {"ok": ok, "cart_count": sum(basket.values()), "message": message},
+            status=200 if ok else 400,
+        )
+    (messages.success if ok else messages.error)(request, message)
+    category = request.POST.get("category", "")
+    query = f"?category={category}" if category in Dish.Category.values else ""
+    return redirect(f"{reverse('catalog')}{query}#dish-{dish.pk}")
 
 
 @require_POST

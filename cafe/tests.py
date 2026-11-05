@@ -14,7 +14,7 @@ from django.utils import timezone
 )
 class PublicPagesTests(TestCase):
     def test_catalog_is_available(self):
-        self.assertContains(self.client.get("/"), "Демонстрационная версия")
+        self.assertContains(self.client.get("/"), "Знакомый вкус.")
 
     def test_empty_checkout_cannot_be_submitted(self):
         response = self.client.post("/checkout/", {})
@@ -65,7 +65,6 @@ class OrderingTests(TestCase):
             "instagram": "demo_example",
             "comment": "",
             "dispatch_date": (timezone.localdate() + timedelta(days=2)).isoformat(),
-            "demo_consent": "on",
             "token": self.client.session["checkout_token"],
         }
 
