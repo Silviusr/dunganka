@@ -1,5 +1,7 @@
 # Hosting configuration
 
+Public URL: https://dunganka.onrender.com/
+
 Target: Render native Python, Singapore, Free web service and Free PostgreSQL 17.
 
 Build: `pip install -r requirements.txt && python manage.py collectstatic --noinput`
@@ -11,3 +13,5 @@ Required secret environment variables: `DATABASE_URL`, `DJANGO_SECRET_KEY`. Runt
 The free PostgreSQL created for this demo expires on 2026-12-05. No automatic paid upgrade is configured. Free web service cold starts are expected. Before the database expires, export its demo data or explicitly choose a paid plan or another persistent database.
 
 Public demo data must remain fictional; there are no live payments or fulfilment. Check health, static assets, checkout, staff access and an actual saved order after the deployment completes.
+
+Health check path: `/healthz/`. Deployment mode: manual (public repository URL); publish a new version with Render Deploy latest commit after CI passes. The database is private to the Render network.

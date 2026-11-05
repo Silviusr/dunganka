@@ -1,5 +1,7 @@
 # Dunganka · family kitchen, connected
 
+**Live demo:** https://dunganka.onrender.com/ · [CI checks](https://github.com/Silviusr/dunganka/actions)
+
 A working Django ordering demo for a family-owned Dungan restaurant in Incheon, South Korea. It turns a back-and-forth Instagram conversation into a structured preorder: dishes, quantities, contact details, address and dispatch date, followed by staff confirmation.
 
 **Portfolio demo, not a live ordering service.** Every dish, portion and price is illustrative. Use fictional customer details only. No payments, notifications or fulfilment are performed. The hero image is AI-generated; menu illustrations are original SVGs, not photographs of restaurant food.
@@ -113,3 +115,5 @@ The native service uses the latest Python 3.13 patch, installs requirements and 
 For the first staff account, set a unique `DJANGO_SUPERUSER_USERNAME` and strong `DJANGO_SUPERUSER_PASSWORD` as **secret environment variables** before startup. `bootstrap_admin` creates that account only when missing; later startups never reset its password or elevate an existing username. No production credentials are committed. The localhost staff account is separate from the hosted database.
 
 Official references: [Django on Render](https://render.com/docs/deploy-django), [Free tier limits](https://render.com/docs/free), [Python runtime selection](https://render.com/docs/python-version).
+
+The current service is connected through its public repository URL, so updates are released manually through Render after CI passes. For automatic deploys, first connect the repository through Render’s Git provider integration.

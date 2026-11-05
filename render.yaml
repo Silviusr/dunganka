@@ -16,6 +16,7 @@ services:
     region: singapore
     repo: https://github.com/Silviusr/dunganka
     branch: main
+    autoDeployTrigger: "off"
     buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput
     startCommand: python manage.py migrate --noinput && python manage.py seed_demo && python manage.py bootstrap_admin && gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --workers 1 --threads 2 --timeout 60
     healthCheckPath: /healthz/
