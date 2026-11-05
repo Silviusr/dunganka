@@ -28,7 +28,10 @@ class WhatsAppTests(TestCase):
     def test_private_receipt_has_complete_message_with_address_last(self):
         self.add()
         response = self.client.post("/checkout/", self.checkout_data())
-        receipt = self.client.get(response.url)
+        self.assertEqual(urlparse(response.url).netloc, "wa.me")
+        from .models import Order
+
+        receipt = self.client.get(f"/orders/{Order.objects.get().pk}/")
         url = receipt.context["whatsapp_url"]
         self.assertEqual(urlparse(url).netloc, "wa.me")
         self.assertEqual(urlparse(url).path, "/821012345678")
@@ -39,3 +42,15 @@ class WhatsAppTests(TestCase):
         self.assertGreater(
             message.index("АДРЕС ДОСТАВКИ"), message.index("Комментарий:")
         )
+
+    @override_settings(WHATSAPP_ORDER_PHONE="821012345678")
+    def test_repeated_checkout_returns_same_whatsapp_draft(self):
+        from .models import Order
+
+        self.add()
+        data = self.checkout_data()
+        first = self.client.post("/checkout/", data)
+        second = self.client.post("/checkout/", data)
+        self.assertEqual(urlparse(first.url).netloc, "wa.me")
+        self.assertEqual(first.url, second.url)
+        self.assertEqual(Order.objects.count(), 1)

@@ -3,12 +3,12 @@ document.querySelectorAll('[data-checkout]').forEach(form => {
     if (!form.checkValidity()) return;
     const button = form.querySelector('button[type="submit"]');
     button.disabled = true;
-    button.textContent = 'Сохраняем…';
+    button.textContent = 'Открываем WhatsApp…';
   });
 });
 window.addEventListener('pageshow', () => document.querySelectorAll('[data-checkout] button[type="submit"]').forEach(button => {
   button.disabled = false;
-  button.textContent = 'Отправить заявку ↗';
+  button.textContent = 'Отправить в WhatsApp ↗';
 }));
 
 // Add in place: no navigation, category reset or change to the document height.

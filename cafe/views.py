@@ -121,7 +121,10 @@ def checkout(request):
         except ValueError:
             previous = None
         if previous:
-            return redirect("receipt", order_id=previous.pk)
+            return redirect(
+                order_whatsapp_url(previous)
+                or reverse("receipt", kwargs={"order_id": previous.pk})
+            )
     rows = cart_rows(request.session.get("cart", {}))
     form = CheckoutForm(
         request.POST if request.method == "POST" else None, initial={"token": token}
@@ -147,7 +150,10 @@ def checkout(request):
                 )[-50:]
                 request.session["cart"] = {}
                 request.session["checkout_token"] = str(uuid.uuid4())
-                return redirect("receipt", order_id=order.pk)
+                return redirect(
+                    order_whatsapp_url(order)
+                    or reverse("receipt", kwargs={"order_id": order.pk})
+                )
     return render(
         request,
         "cafe/checkout.html",
