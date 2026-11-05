@@ -6,7 +6,7 @@ from django.db import models
 class Dish(models.Model):
     class Category(models.TextChoices):
         HOT = "hot", "Горячее"
-        DUMPLINGS = "dumplings", "Манты и выпечка"
+        DUMPLINGS = "dumplings", "Хлеб и гарниры"
         SALADS = "salads", "Салаты"
 
     name = models.CharField("Название", max_length=120)
@@ -15,6 +15,7 @@ class Dish(models.Model):
     portion = models.CharField("Порция", max_length=60)
     price = models.PositiveIntegerField("Цена, ₩", validators=[MinValueValidator(1)])
     category = models.CharField("Категория", max_length=20, choices=Category.choices)
+    image = models.CharField("Фото в static", max_length=200, blank=True)
     available = models.BooleanField("В наличии", default=True)
     position = models.PositiveIntegerField("Порядок", default=0)
 

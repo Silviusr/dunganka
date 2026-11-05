@@ -154,7 +154,7 @@ class ProductionCatalogTests(TestCase):
             call_command("collectstatic", interactive=False, verbosity=0)
             response = self.client.get("/")
             self.assertEqual(response.status_code, 200)
-            for category in ["hot", "dumplings", "salads"]:
+            for image in ["1071", "1698", "1716"]:
                 self.assertContains(
-                    response, staticfiles_storage.url(f"cafe/food-{category}.svg")
+                    response, staticfiles_storage.url(f"cafe/dishes/img-{image}.jpg")
                 )

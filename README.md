@@ -4,7 +4,7 @@
 
 A working Django ordering demo for a family-owned Dungan restaurant in Incheon, South Korea. It turns a back-and-forth Instagram conversation into a structured preorder: dishes, quantities, contact details, address and dispatch date, followed by staff confirmation.
 
-**Portfolio demo, not a live ordering service.** Every dish, portion and price is illustrative. Use fictional customer details only. No payments, notifications or fulfilment are performed. The hero image is AI-generated; menu illustrations are original SVGs, not photographs of restaurant food.
+**Portfolio demo, not a live ordering service.** The menu uses 19 cafe-supplied food photographs and prices transcribed from its November 2026 menu (22 options including smaller portions and half a flatbread). Use fictional customer details only. No payments, notifications or fulfilment are performed. Unidentified photographs, group shots and unverified dishes are excluded.
 
 ![Dunganka desktop interface](docs/screenshots/desktop.png)
 
@@ -40,7 +40,7 @@ The local defaults enable DEBUG and use a development-only signing key. They are
 
 ## Try the workflow
 
-1. Add lagman and manti, open the cart and change a quantity.
+1. Add lagman and a flatbread, open the cart and change a quantity.
 2. Enter fictional details, a five-digit postcode and a future dispatch date. A syntactically valid test phone is `010-0000-0000`.
 3. Confirm the demo checkbox and save the request. Note its number and food subtotal.
 4. Sign into `/admin/`, open the order, set its delivery fee and status.
@@ -60,7 +60,7 @@ python manage.py makemigrations --check --dry-run
 python manage.py test -v 2
 ```
 
-The suite contains 27 integration tests covering totals, snapshots, duplicates, receipt privacy, CSRF, date bounds, invalid quantities/contacts, unavailable and deleted dishes, cart updates, category filtering, seed idempotency and staff editing. GitHub Actions is configured to run these checks; the latest result is available on the repository Actions tab.
+The suite contains integration tests covering totals, snapshots, duplicates, receipt privacy, CSRF, date bounds, invalid quantities/contacts, unavailable and deleted dishes, cart updates, category filtering, seed idempotency and staff editing. GitHub Actions is configured to run these checks; the latest result is available on the repository Actions tab.
 
 ## Architecture
 
