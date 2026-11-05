@@ -58,7 +58,7 @@ python manage.py makemigrations --check --dry-run
 python manage.py test -v 2
 ```
 
-The suite contains 26 integration tests covering totals, snapshots, duplicates, receipt privacy, CSRF, date bounds, invalid quantities/contacts, unavailable and deleted dishes, cart updates, category filtering, seed idempotency and staff editing. GitHub Actions is configured to run these checks; the latest result is available on the repository Actions tab.
+The suite contains 27 integration tests covering totals, snapshots, duplicates, receipt privacy, CSRF, date bounds, invalid quantities/contacts, unavailable and deleted dishes, cart updates, category filtering, seed idempotency and staff editing. GitHub Actions is configured to run these checks; the latest result is available on the repository Actions tab.
 
 ## Architecture
 

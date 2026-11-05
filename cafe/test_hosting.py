@@ -137,3 +137,24 @@ class StaffBootstrapTests(TestCase):
             with self.assertRaises(CommandError):
                 call_command("bootstrap_admin", verbosity=0)
         self.assertFalse(get_user_model().objects.exists())
+
+
+class ProductionCatalogTests(TestCase):
+    def test_catalog_renders_with_collected_manifest_assets(self):
+        from tempfile import TemporaryDirectory
+        from django.core.management import call_command
+        from django.contrib.staticfiles.storage import staticfiles_storage
+        from django.test import override_settings
+
+        call_command("seed_demo", verbosity=0)
+        with (
+            TemporaryDirectory() as directory,
+            override_settings(DEBUG=False, STATIC_ROOT=directory),
+        ):
+            call_command("collectstatic", interactive=False, verbosity=0)
+            response = self.client.get("/")
+            self.assertEqual(response.status_code, 200)
+            for category in ["hot", "dumplings", "salads"]:
+                self.assertContains(
+                    response, staticfiles_storage.url(f"cafe/food-{category}.svg")
+                )
