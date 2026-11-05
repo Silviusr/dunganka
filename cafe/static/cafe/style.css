@@ -8,3 +8,5 @@
 .dish-art img{height:100%;width:100%;object-fit:contain}.dish-art{background:#368b70}.dish-heading{align-items:flex-start;flex-direction:column;gap:5px}
 
 .cart-feedback{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:1000;width:max-content;max-width:calc(100% - 32px);padding:14px 20px;background:var(--ink);color:white;border-radius:10px;box-shadow:0 4px 24px #0003;font-size:14px;pointer-events:none}.cart-feedback.is-error{background:#893e2d}.add-button:disabled{opacity:.6;cursor:wait}
+
+.whatsapp-order{margin:28px auto;max-width:560px}.whatsapp-order p{font-size:13px;color:var(--muted);line-height:1.6;margin-top:14px}

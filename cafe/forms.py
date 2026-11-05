@@ -48,7 +48,12 @@ class CheckoutForm(forms.Form):
         ),
     )
     apartment = forms.CharField(
-        label="Квартира и детали · необязательно", max_length=120, required=False
+        label="Номер квартиры / 호수",
+        max_length=120,
+        error_messages={"required": "Укажите номер квартиры / 호수 для доставки."},
+        widget=forms.TextInput(
+            attrs={"placeholder": "Например, 101호", "autocomplete": "address-line2"}
+        ),
     )
     dispatch_date = forms.DateField(
         label="Желаемая дата отправки", widget=forms.DateInput(attrs={"type": "date"})

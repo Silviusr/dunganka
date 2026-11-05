@@ -10,6 +10,7 @@ from django.views.decorators.cache import never_cache
 from .forms import CheckoutForm
 from .models import Dish, Order
 from .services import cart_rows, place_order
+from .whatsapp import order_whatsapp_url
 
 
 @never_cache
@@ -159,4 +160,8 @@ def receipt(request, order_id):
     if str(order_id) not in request.session.get("order_ids", []):
         raise Http404
     order = get_object_or_404(Order.objects.prefetch_related("lines"), pk=order_id)
-    return render(request, "cafe/receipt.html", {"order": order})
+    return render(
+        request,
+        "cafe/receipt.html",
+        {"order": order, "whatsapp_url": order_whatsapp_url(order)},
+    )
