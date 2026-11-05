@@ -1,9 +1,11 @@
 import os
 from pathlib import Path
+import dj_database_url
 from django.core.exceptions import ImproperlyConfigured
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-DEBUG = os.getenv("DJANGO_DEBUG", "1") == "1"
+ON_RENDER = os.getenv("RENDER") == "true"
+DEBUG = os.getenv("DJANGO_DEBUG", "0" if ON_RENDER else "1") == "1"
 SECRET_KEY = os.getenv(
     "DJANGO_SECRET_KEY", "local-demo-only-not-for-production-change-me"
 )
@@ -15,6 +17,9 @@ ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1,[::1]").s
 CSRF_TRUSTED_ORIGINS = [
     x for x in os.getenv("DJANGO_CSRF_TRUSTED_ORIGINS", "").split(",") if x
 ]
+if ON_RENDER and (hostname := os.getenv("RENDER_EXTERNAL_HOSTNAME")):
+    ALLOWED_HOSTS.append(hostname)
+    CSRF_TRUSTED_ORIGINS.append(f"https://{hostname}")
 INSTALLED_APPS = [
     "cafe",
     "django.contrib.admin",
@@ -59,6 +64,13 @@ DATABASES = {
         "OPTIONS": {"timeout": 20},
     }
 }
+database_url = os.getenv("DATABASE_URL")
+if database_url:
+    DATABASES["default"] = dj_database_url.parse(
+        database_url, conn_max_age=60, conn_health_checks=True, ssl_require=not DEBUG
+    )
+elif ON_RENDER:
+    raise ImproperlyConfigured("Render requires DATABASE_URL for persistent storage.")
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
@@ -85,6 +97,12 @@ SESSION_COOKIE_SAMESITE = "Lax"
 SESSION_COOKIE_SECURE = not DEBUG
 CSRF_COOKIE_SECURE = not DEBUG
 SECURE_SSL_REDIRECT = not DEBUG
+# Enable only behind an ingress that controls X-Forwarded-Proto (Render).
+SECURE_PROXY_SSL_HEADER = (
+    ("HTTP_X_FORWARDED_PROTO", "https")
+    if os.getenv("DJANGO_TRUST_PROXY") == "1"
+    else None
+)
 SECURE_HSTS_SECONDS = 31536000 if not DEBUG else 0
 SECURE_HSTS_INCLUDE_SUBDOMAINS = not DEBUG
 SECURE_HSTS_PRELOAD = not DEBUG

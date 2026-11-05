@@ -58,7 +58,7 @@ python manage.py makemigrations --check --dry-run
 python manage.py test -v 2
 ```
 
-The suite contains 18 integration tests covering totals, snapshots, duplicates, receipt privacy, CSRF, date bounds, invalid quantities/contacts, unavailable and deleted dishes, cart updates, category filtering, seed idempotency and staff editing. GitHub Actions is configured to run these checks; no hosted CI result is claimed until the repository is published and a run succeeds.
+The suite contains 26 integration tests covering totals, snapshots, duplicates, receipt privacy, CSRF, date bounds, invalid quantities/contacts, unavailable and deleted dishes, cart updates, category filtering, seed idempotency and staff editing. GitHub Actions is configured to run these checks; the latest result is available on the repository Actions tab.
 
 ## Architecture
 
@@ -92,7 +92,7 @@ docker compose up --build
 docker compose exec web python manage.py createsuperuser
 ```
 
-Compose binds only to localhost and keeps SQLite in a named volume. The container uses an unprivileged user and one Gunicorn worker. The image can be used behind an HTTPS ingress for a private hosted demo; no hosting account or public deployment is included.
+Compose binds only to localhost and keeps SQLite in a named volume. The container uses an unprivileged user and one Gunicorn worker. The image can be used behind an HTTPS ingress. A native Python Render deployment is also configured in `render.yaml`.
 
 For an HTTPS deployment, use `DJANGO_DEBUG=0`, a strong unique `DJANGO_SECRET_KEY`, your hostname in `DJANGO_ALLOWED_HOSTS` and your HTTPS origin in `DJANGO_CSRF_TRUSTED_ORIGINS`. Production settings enforce secure cookies, HTTPS redirects and HSTS. Configure trusted proxy HTTPS handling only for infrastructure you control; the app does not blindly trust forwarded headers. Verify against those settings with `python manage.py check --deploy`. Persist and back up the database; do not run multiple replicas sharing this SQLite file. Docker configuration is supplied; the image was not built in this development environment.
 
@@ -103,3 +103,13 @@ Public business launch still needs the actual menu, verified photos/prices, disp
 The restaurant name and social link identify the intended business; the demo visual direction is a proposal, not a claim to reproduce its existing brand. Source code and project illustrations were assembled with AI assistance; review and understand the implementation before describing it in an interview. Third-party packages retain their own licenses. No additional license for the restaurant brand is granted.
 
 See the [project brief](docs/superpowers/specs/2026-11-05-dunganka-design.md) and [implementation plan](docs/superpowers/plans/2026-11-05-dunganka.md).
+
+## Render hosting
+
+`render.yaml` declares a free Python web service and free PostgreSQL in Singapore. The database outlives web-service restarts, but Render Free Postgres expires after **30 days**. Render Free web services sleep after 15 minutes idle; the next visitor may wait about a minute. This is a portfolio demo, not business production hosting.
+
+The native service uses the latest Python 3.13 patch, installs requirements and collects static assets at build time. At startup it applies migrations, seeds missing demo dishes and runs Gunicorn on `$PORT`. `DATABASE_URL` selects PostgreSQL; a Render deployment refuses to fall back to ephemeral SQLite. Render sets its external hostname automatically; production hosts and CSRF origins include it. `DJANGO_TRUST_PROXY=1` must be set only when the ingress controls `X-Forwarded-Proto`, as Render does. `/healthz/` checks the database and returns 200 or 503 without exposing details.
+
+For the first staff account, set a unique `DJANGO_SUPERUSER_USERNAME` and strong `DJANGO_SUPERUSER_PASSWORD` as **secret environment variables** before startup. `bootstrap_admin` creates that account only when missing; later startups never reset its password or elevate an existing username. No production credentials are committed. The localhost staff account is separate from the hosted database.
+
+Official references: [Django on Render](https://render.com/docs/deploy-django), [Free tier limits](https://render.com/docs/free), [Python runtime selection](https://render.com/docs/python-version).

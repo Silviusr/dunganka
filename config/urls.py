@@ -3,6 +3,7 @@ from django.urls import path
 from cafe import views
 
 urlpatterns = [
+    path("healthz/", views.health, name="health"),
     path("admin/", admin.site.urls),
     path("", views.catalog, name="catalog"),
     path("cart/", views.cart, name="cart"),

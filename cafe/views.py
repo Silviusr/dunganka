@@ -1,13 +1,24 @@
 import uuid
 from django.contrib import messages
 from django.core.exceptions import ValidationError
-from django.http import Http404, HttpResponseBadRequest
+from django.http import Http404, HttpResponseBadRequest, JsonResponse
+from django.db import connection, DatabaseError
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
 from django.views.decorators.cache import never_cache
 from .forms import CheckoutForm
 from .models import Dish, Order
 from .services import cart_rows, place_order
+
+
+@never_cache
+def health(request):
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT 1")
+    except DatabaseError:
+        return JsonResponse({"status": "unavailable"}, status=503)
+    return JsonResponse({"status": "ok"})
 
 
 def catalog(request):
